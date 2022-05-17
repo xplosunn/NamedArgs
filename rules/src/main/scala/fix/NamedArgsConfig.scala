@@ -12,6 +12,7 @@ case class NamedArgsConfig(
     "Nil",
     "None",
   ),
+  minLength: Option[Int] = Some(5),
 )
 
 object NamedArgsConfig {

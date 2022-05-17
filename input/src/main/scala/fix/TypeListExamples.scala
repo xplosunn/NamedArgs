@@ -2,6 +2,7 @@
 rule = fix.NamedArgs
 NamedArgs.typeList = ["Int", "String"]
 NamedArgs.argRegexs = []
+NamedArgs.minLength = null
  */
 package fix
 
