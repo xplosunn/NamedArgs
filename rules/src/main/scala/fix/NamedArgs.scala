@@ -71,7 +71,20 @@ class NamedArgs(config: NamedArgsConfig) extends SemanticRule("fix.NamedArgs") {
     val thisParamBlock =
       methodSignature.parameterLists(paramBlockIndex)
 
-    (term: Term, index: Int) =>
+    if (config.minLength.exists(_ <= thisParamBlock.length)) { (term: Term, index: Int) =>
+      term match {
+        case _: Term.Assign =>
+          Patch.empty
+        case term =>
+          thisParamBlock.lift(index) match {
+            case Some(symInfo) =>
+              val paramName = Term.Name(symInfo.displayName).toString
+              Patch.addLeft(term, s"$paramName = ")
+            case None =>
+              Patch.empty
+          }
+      }
+    } else { (term: Term, index: Int) =>
       term match {
         case _: Term.Assign =>
           Patch.empty
@@ -94,6 +107,7 @@ class NamedArgs(config: NamedArgsConfig) extends SemanticRule("fix.NamedArgs") {
               Patch.empty
           }
       }
+    }
   }
 
   private def methodSignature(
